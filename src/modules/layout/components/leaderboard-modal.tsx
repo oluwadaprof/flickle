@@ -1,31 +1,23 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/primitives/ui/dialog";
 
 import { Trophy, Flame, Target, Medal } from "lucide-react";
-import { cn } from "@/src/lib/utils";
 import { useAuthStore } from "@/src/store/use-auth-store";
 import { supabase } from "@/src/integrations/supabase/client";
+import { cn } from "@/src/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/primitives/ui/dialog";
+import { dummyLeaderboard } from "../data/leaderboard";
+import { LeaderboardEntry } from "../types/home";
 
 
-interface LeaderboardEntry {
-    user_id: string;
-    display_name: string;
-    avatar_url: string | null;
-    games_played: number;
-    games_won: number;
-    current_streak: number;
-    max_streak: number;
-    win_rate: number;
-}
-
-interface LeaderboardModalProps {
+type LeaderboardModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }
 
+
 const LeaderboardModal = ({ open, onOpenChange }: LeaderboardModalProps) => {
-    const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(dummyLeaderboard);
+    const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<"wins" | "streak">("wins");
     const { user } = useAuthStore();
 
@@ -43,8 +35,11 @@ const LeaderboardModal = ({ open, onOpenChange }: LeaderboardModalProps) => {
             .select("*")
             .limit(50);
 
-        if (!error && data) {
+        if (!error && data && data.length > 0) {
             setLeaderboard(data as LeaderboardEntry[]);
+        } else {
+            // Use dummy data if no real data
+            setLeaderboard(dummyLeaderboard);
         }
 
         setIsLoading(false);
@@ -102,7 +97,7 @@ const LeaderboardModal = ({ open, onOpenChange }: LeaderboardModalProps) => {
                 </div>
 
                 {/* Leaderboard List */}
-                <div className="flex-1 overflow-y-auto mt-4 space-y-2">
+                <div className="flex-1 overflow-y-auto mt-4 space-y-2 scrollbar-hide">
                     {isLoading ? (
                         <div className="text-center py-8 text-muted-foreground">
                             Loading...

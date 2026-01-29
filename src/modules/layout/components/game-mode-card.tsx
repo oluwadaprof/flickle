@@ -50,7 +50,7 @@ const GameModeCard = ({
             onClick={handleClick}
             className={`group block ${isLocked ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
         >
-            <div className="relative h-full bg-card border border-border rounded-lg p-4 transition-all duration-200 hover:border-primary/40 hover:bg-card/80">
+            <div className="relative h-full bg-card border border-border rounded-2xl p-4 transition-all duration-200 hover:border-primary/40 hover:bg-card/80">
                 {/* Top row: emoji and arrow */}
                 <div className="flex items-start justify-between mb-3">
                     <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center text-xl">

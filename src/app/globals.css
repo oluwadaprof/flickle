@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -14,12 +15,8 @@
 @layer base {
   html,
   body {
-    font-family:
-      'Plus Jakarta Sans',
-      -apple-system,
-      BlinkMacSystemFont,
-      sans-serif;
-    @apply bg-background text-foreground antialiased;
+    @apply font-body bg-background text-foreground antialiased;
+    font-family: var(--font-body);
     /* Hide scrollbar */
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -35,11 +32,17 @@
     @apply border-border;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
-    letter-spacing: 0.02em;
+    letter-spacing: -0.02em;
+    font-weight: 600;
   }
- 
+
   :root {
     /* Base theme variables */
     --background: 0 0% 100%;
@@ -79,8 +82,9 @@
     --shadow-card: 0 1px 2px hsl(0 0% 0% / 0.4);
 
     /* Fonts */
-    --font-display: 'Bebas Neue', sans-serif;
-    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Geist', sans-serif;
+    --font-body: 'Geist', sans-serif;
+    --font-mono: 'Geist Mono', monospace;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 10% 3.9%;
@@ -290,7 +294,6 @@
     background-color: hsl(var(--empty));
     border: 2px solid hsl(var(--border));
   }
-
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -299,7 +302,6 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-
   /* Tile flip animation */
   @keyframes tile-flip {
     0% {
@@ -336,13 +338,16 @@
 
   /* Shake animation */
   @keyframes shake {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0);
     }
-    20%, 60% {
+    20%,
+    60% {
       transform: translateX(-4px);
     }
-    40%, 80% {
+    40%,
+    80% {
       transform: translateX(4px);
     }
   }
@@ -371,5 +376,57 @@
 
   .animate-bounce-in {
     animation: bounce-in 0.6s ease-out;
+  }
+
+  /* Fluid background animations */
+  @keyframes fluid-1 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(30px, -20px) scale(1.05);
+    }
+    50% {
+      transform: translate(-20px, 30px) scale(0.95);
+    }
+    75% {
+      transform: translate(-30px, -10px) scale(1.02);
+    }
+  }
+
+  @keyframes fluid-2 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(40px, 20px) scale(1.1);
+    }
+    66% {
+      transform: translate(-30px, -30px) scale(0.9);
+    }
+  }
+
+  @keyframes fluid-3 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(-50px, 40px) scale(1.15);
+    }
+  }
+
+  .animate-fluid-1 {
+    animation: fluid-1 20s ease-in-out infinite;
+  }
+
+  .animate-fluid-2 {
+    animation: fluid-2 25s ease-in-out infinite;
+  }
+
+  .animate-fluid-3 {
+    animation: fluid-3 30s ease-in-out infinite;
   }
 }
