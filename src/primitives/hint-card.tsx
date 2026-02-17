@@ -41,8 +41,8 @@ const HintCard = ({ hints, attemptsUsed }: HintCardProps) => {
     };
 
     return (
-        <div className="bg-card border border-border rounded-xl p-4">
-            <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+        <div className="bg-card border border-border font-mono rounded-xl p-4">
+            <h4 className="text-xs uppercase tracking-wider font-mono text-muted-foreground mb-3">
                 Progressive Hints
             </h4>
             <div className="grid grid-cols-3 gap-3">

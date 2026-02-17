@@ -74,7 +74,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md bg-card border-border">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl text-center">
+                    <DialogTitle className="font-mono text-2xl text-center">
                         {isSignUp ? "Create Account" : "Welcome Back"}
                     </DialogTitle>
                 </DialogHeader>
@@ -100,7 +100,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                     )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm text-muted-foreground">
+                        <Label htmlFor="email" className="text-sm font-mono text-muted-foreground">
                             Email
                         </Label>
                         <div className="relative">
@@ -118,7 +118,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="password" className="text-sm text-muted-foreground">
+                        <Label htmlFor="password" className="text-sm font-mono text-muted-foreground">
                             Password
                         </Label>
                         <div className="relative">
@@ -170,7 +170,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                     Play as Guest
                 </Button>
 
-                <p className="text-center text-sm text-muted-foreground mt-4">
+                <p className="text-center font-mono text-sm text-muted-foreground mt-4">
                     {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
                     <button
                         type="button"

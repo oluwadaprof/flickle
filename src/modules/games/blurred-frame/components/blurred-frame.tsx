@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Eye, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "@/src/hooks/use-toast";
 import Header from "@/src/modules/layout/components/header";
 import { Input } from "@/src/primitives/ui/input";
 import { Button } from "@/src/primitives/ui/button";
+import GameTimer from "@/src/primitives/game-timer";
+import GameResultModal from "@/src/primitives/game-result-modal";
 
 
 const ANSWER = "The Matrix";
@@ -21,6 +23,19 @@ const BlurredFrame = () => {
     const [attempts, setAttempts] = useState(0);
     const [gameOver, setGameOver] = useState(false);
     const [won, setWon] = useState(false);
+    const [showResults, setShowResults] = useState(false);
+
+    const handleTimeUp = useCallback(() => {
+        if (!gameOver && !won) {
+            setGameOver(true);
+            setTimeout(() => setShowResults(true), 500);
+            toast({
+                title: "Time's up!",
+                description: `The answer was ${ANSWER}`,
+                variant: "destructive",
+            });
+        }
+    }, [gameOver, won]);
 
     const currentBlur = BLUR_LEVELS[Math.min(attempts, BLUR_LEVELS.length - 1)];
 
@@ -66,13 +81,20 @@ const BlurredFrame = () => {
                     <div className="text-center mb-8">
                         <div className="inline-flex items-center gap-2 mb-3">
                             <span className="text-4xl">🖼️</span>
-                            <h1 className="font-display text-3xl tracking-wide text-foreground">
+                            <h1 className="font-mono text-3xl tracking-wide text-foreground">
                                 THE BLURRED FRAME
                             </h1>
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground font-mono">
                             Flickle #{FLICKLE_NUMBER} • Identify the movie from this still
                         </p>
+
+                        {/* Timer */}
+                        {!gameOver && !won && (
+                            <div className="mt-4 flex justify-center">
+                                <GameTimer difficulty="hard" onTimeUp={handleTimeUp} isPaused={gameOver || won} />
+                            </div>
+                        )}
                     </div>
 
                     {/* Blurred Image */}
@@ -91,7 +113,7 @@ const BlurredFrame = () => {
                         {/* Blur level indicator */}
                         <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
                             <Eye className="w-4 h-4 text-primary" />
-                            <span className="text-xs font-medium">
+                            <span className="text-xs font-mono font-medium">
                                 {currentBlur === 0 ? "Clear" : `Blur: ${currentBlur}px`}
                             </span>
                         </div>
@@ -120,7 +142,7 @@ const BlurredFrame = () => {
                         <div className="text-center animate-bounce-in">
                             <div
                                 className={`
-                  inline-flex items-center gap-3 p-6 rounded-xl border
+                  inline-flex items-center gap-3 p-6 rounded-xl border font-mono
                   ${won ? "bg-game-correct/20 border-game-correct" : "bg-destructive/20 border-destructive"}
                 `}
                             >
@@ -130,10 +152,10 @@ const BlurredFrame = () => {
                                     <XCircle className="w-8 h-8 text-destructive" />
                                 )}
                                 <div className="text-left">
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-sm text-muted-foreground font-mono">
                                         {won ? `Solved in ${attempts} ${attempts === 1 ? "attempt" : "attempts"}!` : "The answer was"}
                                     </p>
-                                    <p className="font-display text-2xl text-foreground">
+                                    <p className="font-mono text-2xl text-foreground">
                                         {ANSWER}
                                     </p>
                                 </div>
@@ -147,7 +169,7 @@ const BlurredFrame = () => {
                                     placeholder="Enter movie title..."
                                     value={guess}
                                     onChange={(e) => setGuess(e.target.value)}
-                                    className="h-14 text-lg bg-card border-border focus:border-primary pl-4 pr-4"
+                                    className="h-14 text-lg bg-card border-border font-mono focus:border-primary pl-4 pr-4"
                                 />
                             </div>
                             <Button type="submit" size="lg" className="w-full">
@@ -157,6 +179,18 @@ const BlurredFrame = () => {
                     )}
                 </div>
             </main>
+
+            <GameResultModal
+                isOpen={showResults}
+                onClose={() => setShowResults(false)}
+                won={won}
+                answer={ANSWER}
+                attempts={attempts}
+                maxAttempts={MAX_ATTEMPTS}
+                gameMode="Blurred Frame"
+                flickleNumber={FLICKLE_NUMBER}
+                emoji="🖼️"
+            />
         </div>
     );
 };

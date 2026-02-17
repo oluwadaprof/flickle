@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Users, HelpCircle, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "@/src/hooks/use-toast";
 import Header from "@/src/modules/layout/components/header";
 import { Input } from "@/src/primitives/ui/input";
 import { Button } from "@/src/primitives/ui/button";
+import GameResultModal from "@/src/primitives/game-result-modal";
 
 const ANSWER = "Pulp Fiction";
 const FLICKLE_NUMBER = 142;
@@ -23,6 +24,19 @@ const CastingWeb = () => {
     const [gameOver, setGameOver] = useState(false);
     const [won, setWon] = useState(false);
     const [showHint, setShowHint] = useState(false);
+    const [showResults, setShowResults] = useState(false);
+
+    const handleTimeUp = useCallback(() => {
+        if (!gameOver && !won) {
+            setGameOver(true);
+            setTimeout(() => setShowResults(true), 500);
+            toast({
+                title: "Time's up!",
+                description: `The answer was ${ANSWER}`,
+                variant: "destructive",
+            });
+        }
+    }, [gameOver, won]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,10 +78,10 @@ const CastingWeb = () => {
             <main className="pt-24 pb-8 px-4">
                 <div className="container mx-auto max-w-lg">
                     {/* Title */}
-                    <div className="text-center mb-8">
+                    <div className="text-center font-mono mb-8">
                         <div className="inline-flex items-center gap-2 mb-3">
                             <span className="text-4xl">🕸️</span>
-                            <h1 className="font-display text-3xl tracking-wide text-foreground">
+                            <h1 className="font-mono text-3xl tracking-wide text-foreground">
                                 THE CASTING WEB
                             </h1>
                         </div>
@@ -84,7 +98,7 @@ const CastingWeb = () => {
                                 <div
                                     key={actor.name}
                                     className={`
-                    p-4 rounded-xl border transition-all duration-300
+                    p-4 rounded-xl border transition-all duration-300 font-mono
                     ${isRevealed
                                             ? "bg-card border-border"
                                             : "bg-muted/30 border-dashed border-muted-foreground/30"
@@ -118,7 +132,7 @@ const CastingWeb = () => {
 
                     {/* Hint info */}
                     {attempts > 0 && !gameOver && (
-                        <div className="bg-card border border-border rounded-xl p-4 mb-6 animate-fade-up">
+                        <div className="bg-card border font-mono border-border rounded-xl p-4 mb-6 animate-fade-up">
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <span className="text-primary">💡</span>
                                 {attempts === 1 && "Hint: Released in 1994"}
@@ -129,7 +143,7 @@ const CastingWeb = () => {
 
                     {/* Game state */}
                     {gameOver ? (
-                        <div className="text-center animate-bounce-in">
+                        <div className="text-center font-mono animate-bounce-in">
                             <div
                                 className={`
                   inline-flex items-center gap-3 p-6 rounded-xl border
@@ -159,7 +173,7 @@ const CastingWeb = () => {
                                     placeholder="Enter movie title..."
                                     value={guess}
                                     onChange={(e) => setGuess(e.target.value)}
-                                    className="h-14 text-lg bg-card border-border focus:border-primary pl-4 pr-4"
+                                    className="h-14 text-lg bg-card border-border focus:border-primary font-mono pl-4 pr-4"
                                 />
                             </div>
                             <Button type="submit" size="lg" className="w-full">
@@ -187,6 +201,18 @@ const CastingWeb = () => {
                     </div>
                 </div>
             </main>
+
+            <GameResultModal
+                isOpen={showResults}
+                onClose={() => setShowResults(false)}
+                won={won}
+                answer={ANSWER}
+                attempts={attempts}
+                maxAttempts={3}
+                gameMode="Casting Web"
+                flickleNumber={FLICKLE_NUMBER}
+                emoji="🕸️"
+            />
         </div>
     );
 };

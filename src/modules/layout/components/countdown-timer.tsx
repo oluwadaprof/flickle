@@ -38,17 +38,17 @@ const CountdownTimer = () => {
     return (
         <div className="flex items-center justify-center gap-3 text-muted-foreground">
             <Clock className="w-4 h-4" />
-            <span className="text-sm">Next Flickle in</span>
+            <span className="text-xs font-mono uppercase tracking-wider">NEXT FLICKLE IN</span>
             <div className="flex items-center gap-1 font-mono text-foreground">
-                <span className="bg-secondary px-2 py-1 rounded text-sm">
+                <span className="bg-secondary border-2 border-border px-2 py-1 rounded-lg text-sm shadow-[2px_2px_0_0_hsl(var(--border))]">
                     {formatNumber(timeLeft.hours)}
                 </span>
-                <span>:</span>
-                <span className="bg-secondary px-2 py-1 rounded text-sm">
+                <span className="font-mono">:</span>
+                <span className="bg-secondary border-2 border-border px-2 py-1 rounded-lg text-sm shadow-[2px_2px_0_0_hsl(var(--border))]">
                     {formatNumber(timeLeft.minutes)}
                 </span>
-                <span>:</span>
-                <span className="bg-secondary px-2 py-1 rounded text-sm">
+                <span className="font-mono">:</span>
+                <span className="bg-secondary border-2 border-border px-2 py-1 rounded-lg text-sm shadow-[2px_2px_0_0_hsl(var(--border))]">
                     {formatNumber(timeLeft.seconds)}
                 </span>
             </div>

@@ -23,7 +23,7 @@ const GameBoard = ({
     revealingRow = -1,
 }: GameBoardProps) => {
     return (
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col font-mono items-center gap-2">
             {rows.map((row, rowIndex) => (
                 <div key={rowIndex} className="flex gap-2">
                     {Array.from({ length: maxLetters }).map((_, colIndex) => {

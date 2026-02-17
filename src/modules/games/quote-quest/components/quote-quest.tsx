@@ -1,13 +1,14 @@
 'use client'
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Quote, Film } from "lucide-react";
 import { toast } from "@/src/hooks/use-toast";
-import Header from "../../layout/components/header";
+import Header from "../../../layout/components/header";
 import { Input } from "@/src/primitives/ui/input";
 import { Button } from "@/src/primitives/ui/button";
 import GameResultModal from "@/src/primitives/game-result-modal";
+import GameTimer from "@/src/primitives/game-timer";
 
 
 const ANSWER = "The Godfather";
@@ -24,6 +25,18 @@ const QuoteQuest = () => {
     const [won, setWon] = useState(false);
     const [revealedHints, setRevealedHints] = useState<string[]>([]);
     const [showResults, setShowResults] = useState(false);
+
+    const handleTimeUp = useCallback(() => {
+        if (!gameOver && !won) {
+            setGameOver(true);
+            setTimeout(() => setShowResults(true), 500);
+            toast({
+                title: "Time's up!",
+                description: `The answer was ${ANSWER}`,
+                variant: "destructive",
+            });
+        }
+    }, [gameOver, won]);
 
     const hints = [
         "Released in 1972",
@@ -80,17 +93,24 @@ const QuoteQuest = () => {
                     <div className="text-center mb-8">
                         <div className="inline-flex items-center gap-2 mb-3">
                             <span className="text-4xl">💬</span>
-                            <h1 className="font-display text-3xl tracking-wide text-foreground">
+                            <h1 className="font-mono text-3xl tracking-wide text-foreground">
                                 QUOTE QUEST
                             </h1>
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm font-mono text-muted-foreground">
                             Flickle #{FLICKLE_NUMBER} • Name the movie from this famous quote
                         </p>
+
+                        {/* Timer */}
+                        {!gameOver && !won && (
+                            <div className="mt-4 flex justify-center">
+                                <GameTimer difficulty="medium" onTimeUp={handleTimeUp} isPaused={gameOver || won} />
+                            </div>
+                        )}
                     </div>
 
                     {/* Quote Card */}
-                    <div className="relative mb-8">
+                    <div className="relative font-mono mb-8">
                         <div className="bg-card border border-border rounded-xl p-6">
                             <Quote className="w-10 h-10 text-primary mb-4 opacity-40" />
                             <p className="text-xl text-foreground leading-relaxed font-medium mb-4">
@@ -105,7 +125,7 @@ const QuoteQuest = () => {
 
                     {/* Revealed Hints */}
                     {revealedHints.length > 0 && !gameOver && (
-                        <div className="space-y-2 mb-6 animate-fade-up">
+                        <div className="space-y-2 mb-6 font-mono animate-fade-up">
                             {revealedHints.map((hint, index) => (
                                 <div
                                     key={index}
@@ -120,7 +140,7 @@ const QuoteQuest = () => {
 
                     {/* Game state */}
                     {gameOver ? (
-                        <div className="text-center py-8">
+                        <div className="text-center font-mono py-8">
                             <p className="text-muted-foreground">
                                 {won ? "🎉 You got it!" : "Better luck tomorrow!"}
                             </p>
@@ -133,7 +153,7 @@ const QuoteQuest = () => {
                                     placeholder="Enter movie title..."
                                     value={guess}
                                     onChange={(e) => setGuess(e.target.value)}
-                                    className="h-14 text-lg bg-card border-border focus:border-primary pl-4 pr-4"
+                                    className="h-14 text-lg bg-card font-mono border-border focus:border-primary pl-4 pr-4"
                                 />
                             </div>
                             <Button type="submit" size="lg" className="w-full">
@@ -143,7 +163,7 @@ const QuoteQuest = () => {
                     )}
 
                     {/* Attempts indicator */}
-                    <div className="flex justify-center gap-2 mt-8">
+                    <div className="flex justify-center font-mono gap-2 mt-8">
                         {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => (
                             <div
                                 key={index}

@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from "react";
-import { ArrowLeft, Music, RefreshCw, Volume2, HelpCircle } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeft, Music, RefreshCw, Volume2, HelpCircle, VolumeX, Pause, Play } from "lucide-react";
 
 import { toast } from "sonner";
-import Header from "../../layout/components/header";
+import Header from "../../../layout/components/header";
 import Link from "next/link";
 import { Input } from "@/src/primitives/ui/input";
 import { Button } from "@/src/primitives/ui/button";
 import GameResultModal from "@/src/primitives/game-result-modal";
+import GameTimer from "@/src/primitives/game-timer";
 
 // Hard mode - identify movies from soundtrack/composer clues
 const soundtracks = [
@@ -16,6 +17,7 @@ const soundtracks = [
         movie: "The Lord of the Rings: The Fellowship of the Ring",
         year: 2001,
         composer: "Howard Shore",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
         clues: [
             "Epic orchestral score with prominent use of choir",
             "Features the iconic 'Concerning Hobbits' theme",
@@ -28,6 +30,7 @@ const soundtracks = [
         movie: "Schindler's List",
         year: 1993,
         composer: "John Williams",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
         clues: [
             "Haunting violin solo performed by Itzhak Perlman",
             "Minimalist and deeply emotional composition",
@@ -40,6 +43,7 @@ const soundtracks = [
         movie: "Gladiator",
         year: 2000,
         composer: "Hans Zimmer",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
         clues: [
             "Features Lisa Gerrard's ethereal vocals",
             "'Now We Are Free' became an iconic piece",
@@ -52,6 +56,7 @@ const soundtracks = [
         movie: "Pirates of the Caribbean",
         year: 2003,
         composer: "Klaus Badelt & Hans Zimmer",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
         clues: [
             "'He's a Pirate' - instantly recognizable theme",
             "Adventurous, swashbuckling orchestral score",
@@ -64,6 +69,7 @@ const soundtracks = [
         movie: "Psycho",
         year: 1960,
         composer: "Bernard Herrmann",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
         clues: [
             "Famous shrieking violin strings",
             "All-strings orchestra - no other instruments",
@@ -82,7 +88,65 @@ const SoundtrackSleuth = () => {
     const [gameWon, setGameWon] = useState(false);
     const [gameOver, setGameOver] = useState(false);
     const [showResult, setShowResult] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [volume, setVolume] = useState(0.7);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     const maxAttempts = 4;
+
+    // Initialize and auto-play audio on mount
+    useEffect(() => {
+        const audio = new Audio(currentTrack.audioUrl);
+        audio.volume = volume;
+        audio.loop = true;
+        audioRef.current = audio;
+
+        // Attempt autoplay - browsers may block it, so we handle gracefully
+        audio.play()
+            .then(() => setIsPlaying(true))
+            .catch(() => {
+                // Autoplay blocked by browser, user must click play
+                setIsPlaying(false);
+            });
+
+        return () => {
+            audio.pause();
+            audio.src = "";
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentTrack.audioUrl]);
+
+    const togglePlay = useCallback(() => {
+        if (!audioRef.current) return;
+        if (isPlaying) {
+            audioRef.current.pause();
+            setIsPlaying(false);
+        } else {
+            audioRef.current.play().then(() => setIsPlaying(true)).catch(() => { });
+        }
+    }, [isPlaying]);
+
+    const handleVolumeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = parseFloat(e.target.value);
+        setVolume(val);
+        if (audioRef.current) audioRef.current.volume = val;
+    }, []);
+
+    const stopAudio = useCallback(() => {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            setIsPlaying(false);
+        }
+    }, []);
+
+
+    const handleTimeUp = useCallback(() => {
+        if (!gameWon && !gameOver) {
+            setGameOver(true);
+            setShowResult(true);
+            toast.error(`Time's up! It was "${currentTrack.movie}"`);
+        }
+    }, [gameWon, gameOver, currentTrack.movie]);
 
     const handleGuess = () => {
         if (!guess.trim()) return;
@@ -133,25 +197,25 @@ const SoundtrackSleuth = () => {
 
             <main className="pt-20 pb-12 px-4">
                 <div className="container mx-auto max-w-2xl">
-                    <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
-                        <ArrowLeft className="w-4 h-4" />
-                        <span className="text-sm">Back to Games</span>
-                    </Link>
 
                     <div className="text-center mb-8">
-                        <div className="inline-flex items-center gap-2 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-1 mb-4">
-                            <span className="text-xs font-medium text-destructive">HARD</span>
-                        </div>
                         <h1 className="text-3xl font-display tracking-tight mb-2">
-                            <span className="text-gradient">Soundtrack Sleuth</span>
+                            <span className="font-mono">Soundtrack Sleuth</span>
                         </h1>
-                        <p className="text-muted-foreground">
+                        <p className="text-muted-foreground font-mono">
                             Identify the movie from its iconic soundtrack
                         </p>
+
+                        {/* Timer */}
+                        {!gameWon && !gameOver && (
+                            <div className="mt-4 flex justify-center">
+                                <GameTimer difficulty="hard" onTimeUp={handleTimeUp} isPaused={gameWon || gameOver} />
+                            </div>
+                        )}
                     </div>
 
                     {/* Soundtrack Card */}
-                    <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-6 mb-6">
+                    <div className="bg-card/80 font-mono backdrop-blur-sm border border-border rounded-xl p-6 mb-6">
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2">
                                 <Music className="w-5 h-5 text-primary" />
@@ -162,10 +226,36 @@ const SoundtrackSleuth = () => {
                             </span>
                         </div>
 
-                        {/* Composer hint */}
-                        <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
-                            <Volume2 className="w-4 h-4" />
-                            <span>Composed by: <span className="text-foreground font-medium">{currentTrack.composer}</span></span>
+                        {/* Audio Player */}
+                        <div className="flex items-center font-mono gap-3 mb-4 p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={togglePlay}
+                                className="shrink-0 h-10 w-10 rounded-full border-primary/30 hover:bg-primary/10"
+                            >
+                                {isPlaying ? <Pause className="w-4 h-4 text-primary" /> : <Play className="w-4 h-4 text-primary" />}
+                            </Button>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs font-mono uppercase tracking-wider text-primary">
+                                    {isPlaying ? "Now Playing" : "Play Soundtrack"}
+                                </p>
+                                <p className="text-xs text-muted-foreground truncate">
+                                    Composed by: <span className="text-foreground font-medium">{currentTrack.composer}</span>
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                                {volume === 0 ? <VolumeX className="w-4 h-4 text-muted-foreground" /> : <Volume2 className="w-4 h-4 text-muted-foreground" />}
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="1"
+                                    step="0.05"
+                                    value={volume}
+                                    onChange={handleVolumeChange}
+                                    className="w-20 h-1 accent-primary cursor-pointer"
+                                />
+                            </div>
                         </div>
 
                         {/* Clues */}
@@ -197,7 +287,7 @@ const SoundtrackSleuth = () => {
                                     value={guess}
                                     onChange={(e) => setGuess(e.target.value)}
                                     placeholder="Enter movie name..."
-                                    className="bg-card/50 border-border"
+                                    className="bg-card/50 border-border font-mono"
                                     onKeyDown={(e) => e.key === "Enter" && handleGuess()}
                                 />
                                 <Button onClick={handleGuess}>Guess</Button>

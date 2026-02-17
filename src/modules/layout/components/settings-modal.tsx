@@ -78,7 +78,7 @@ const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md bg-card border-border">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl text-center">
+                    <DialogTitle className="font-mono text-2xl text-center">
                         Settings
                     </DialogTitle>
                 </DialogHeader>
@@ -86,7 +86,7 @@ const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                 <div className="space-y-6 mt-4">
                     {/* Account Section */}
                     <div className="space-y-4">
-                        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                        <h3 className="text-sm font-medium font-mono text-muted-foreground uppercase tracking-wide">
                             Account
                         </h3>
 
@@ -125,11 +125,11 @@ const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
 
                     {/* Game Settings */}
                     <div className="space-y-4">
-                        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                        <h3 className="text-sm font-medium font-mono text-muted-foreground uppercase tracking-wide">
                             Game
                         </h3>
 
-                        <div className="flex items-center justify-between p-4 bg-background rounded-lg border border-border">
+                        <div className="flex items-center justify-between font-mono p-4 bg-background rounded-lg border border-border">
                             <div>
                                 <p className="text-sm font-medium text-foreground">Hard Mode</p>
                                 <p className="text-xs text-muted-foreground">

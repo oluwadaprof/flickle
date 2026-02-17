@@ -14,3 +14,11 @@ export const dummyLeaderboard: LeaderboardEntry[] = [
     { user_id: "11", display_name: "VilleneuveVIP", avatar_url: null, games_played: 76, games_won: 59, current_streak: 7, max_streak: 18, win_rate: 78 },
     { user_id: "12", display_name: "FincherFanatic", avatar_url: null, games_played: 65, games_won: 50, current_streak: 3, max_streak: 16, win_rate: 77 },
 ];
+
+export const top5Leaderboard = [
+    { rank: 1, name: "CinemaKing_42", wins: 142, streak: 45, avatar: "🎬" },
+    { rank: 2, name: "MovieBuff2024", wins: 178, streak: 38, avatar: "🎥" },
+    { rank: 3, name: "FilmNerd_Pro", wins: 165, streak: 35, avatar: "🎞️" },
+    { rank: 4, name: "Tarantino_Fan", wins: 115, streak: 31, avatar: "🍿" },
+    { rank: 5, name: "NolanEnjoyer", wins: 152, streak: 29, avatar: "🎭" },
+  ];

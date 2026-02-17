@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ArrowLeft, Eye, RefreshCw, HelpCircle } from "lucide-react";
 
 import { toast } from "sonner";
-import Header from "../../layout/components/header";
+import Header from "../../../layout/components/header";
 import Link from "next/link";
 import { Input } from "@/src/primitives/ui/input";
 import { Button } from "@/src/primitives/ui/button";
 import GameResultModal from "@/src/primitives/game-result-modal";
+import GameTimer from "@/src/primitives/game-timer";
 
 // Scenes with easy-to-recognize movie moments
 const scenes = [
@@ -54,6 +55,14 @@ const SceneGuesser = () => {
     const [showResult, setShowResult] = useState(false);
     const maxAttempts = 5;
 
+    const handleTimeUp = useCallback(() => {
+        if (!gameWon && !gameOver) {
+            setGameOver(true);
+            setShowResult(true);
+            toast.error(`Time's up! It was "${currentScene.movie}"`);
+        }
+    }, [gameWon, gameOver, currentScene.movie]);
+
     const handleGuess = () => {
         if (!guess.trim()) return;
 
@@ -96,27 +105,26 @@ const SceneGuesser = () => {
 
             <main className="pt-20 pb-12 px-4">
                 <div className="container mx-auto max-w-2xl">
-                    {/* Back Button */}
-                    <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
-                        <ArrowLeft className="w-4 h-4" />
-                        <span className="text-sm">Back to Games</span>
-                    </Link>
 
                     {/* Game Header */}
                     <div className="text-center mb-8">
-                        <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-3 py-1 mb-4">
-                            <span className="text-xs font-medium text-emerald-400">EASY</span>
-                        </div>
-                        <h1 className="text-3xl font-display tracking-tight mb-2">
-                            <span className="text-gradient">Scene Guesser</span>
+                        <h1 className="text-3xl font-mono tracking-tight mb-2">
+                            <span className="">Scene Guesser</span>
                         </h1>
-                        <p className="text-muted-foreground">
+                        <p className="text-muted-foreground font-mono">
                             Identify the movie from the iconic scene description
                         </p>
+
+                        {/* Timer */}
+                        {!gameWon && !gameOver && (
+                            <div className="mt-4 flex justify-center">
+                                <GameTimer difficulty="easy" onTimeUp={handleTimeUp} isPaused={gameWon || gameOver} />
+                            </div>
+                        )}
                     </div>
 
                     {/* Scene Card */}
-                    <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-6 mb-6">
+                    <div className="bg-card/80 font-mono backdrop-blur-sm border border-border rounded-xl p-6 mb-6">
                         <div className="flex items-center gap-2 mb-4">
                             <Eye className="w-5 h-5 text-primary" />
                             <span className="text-sm font-medium text-primary">Iconic Scene</span>
@@ -128,7 +136,7 @@ const SceneGuesser = () => {
 
                         {/* Hints section */}
                         {hintsUsed > 0 && (
-                            <div className="space-y-2 mb-4">
+                            <div className="space-y-2 mb-4 font-mono">
                                 {currentScene.hints.slice(0, hintsUsed).map((hint, i) => (
                                     <div key={i} className="text-sm text-muted-foreground bg-secondary/50 rounded px-3 py-1.5">
                                         💡 {hint}
@@ -138,7 +146,7 @@ const SceneGuesser = () => {
                         )}
 
                         {/* Stats */}
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <div className="flex items-center font-mono justify-between text-sm text-muted-foreground">
                             <span>Attempts: {attempts}/{maxAttempts}</span>
                             <span>Hints: {hintsUsed}/{currentScene.hints.length}</span>
                         </div>
@@ -152,7 +160,7 @@ const SceneGuesser = () => {
                                     value={guess}
                                     onChange={(e) => setGuess(e.target.value)}
                                     placeholder="Enter movie name..."
-                                    className="bg-card/50 border-border"
+                                    className="bg-card/50 border-border font-mono"
                                     onKeyDown={(e) => e.key === "Enter" && handleGuess()}
                                 />
                                 <Button onClick={handleGuess}>Guess</Button>

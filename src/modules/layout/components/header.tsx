@@ -24,7 +24,7 @@ const Header = () => {
                     <div className="flex items-center justify-between h-14">
                         <Link href="/" className="flex items-center gap-2">
                             <Film className="w-5 h-5 text-primary" />
-                            <span className="font-display text-xl tracking-wide">
+                            <span className="font-mono text-lg tracking-widest uppercase text-pixel">
                                 FLICKLE
                             </span>
                         </Link>

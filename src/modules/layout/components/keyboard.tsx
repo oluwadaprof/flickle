@@ -44,7 +44,7 @@ const Keyboard = ({ onKeyPress, onEnter, onDelete, keyStatuses }: KeyboardProps)
     };
 
     return (
-        <div className="w-full max-w-lg mx-auto px-2">
+        <div className="w-full max-w-lg font-mono mx-auto px-2">
             {KEYBOARD_ROWS.map((row, rowIndex) => (
                 <div key={rowIndex} className="flex justify-center gap-1.5 mb-2">
                     {row.map((key) => (

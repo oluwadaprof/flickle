@@ -1,4 +1,4 @@
-import PosterPuzzle from "@/src/modules/games/poster-puzzle/poster-puzzle"
+import PosterPuzzle from "@/src/modules/games/poster-puzzle/components/poster-puzzle"
 
 
 const PosterPuzzlePage = () => {

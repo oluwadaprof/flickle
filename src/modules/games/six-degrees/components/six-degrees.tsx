@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ArrowRight, CheckCircle2, Film, RotateCcw, Share2, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/src/primitives/ui/input";
 import { Button } from "@/src/primitives/ui/button";
 import Header from "@/src/modules/layout/components/header";
-
+import GameTimer from "@/src/primitives/game-timer";
+import GameResultModal from "@/src/primitives/game-result-modal";
 // Sample data - in production this would come from TMDB API
 const CHALLENGE = {
     startActor: "Kevin Bacon",
@@ -35,9 +36,19 @@ const SixDegrees = () => {
     const [isComplete, setIsComplete] = useState(false);
     const [hasWon, setHasWon] = useState(false);
     const [attempts, setAttempts] = useState(0);
+    const [showResults, setShowResults] = useState(false);
 
     const expectedType = path.length % 2 === 1 ? "movie" : "actor";
     const maxAttempts = 6;
+
+    const handleTimeUp = useCallback(() => {
+        if (!isComplete) {
+            setIsComplete(true);
+            setHasWon(false);
+            setTimeout(() => setShowResults(true), 500);
+            toast.error("Time's up!");
+        }
+    }, [isComplete]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -116,14 +127,21 @@ flickle.app/play/degrees`;
                 <div className="container mx-auto max-w-2xl">
                     {/* Title */}
                     <div className="text-center mb-8">
-                        <h1 className="font-display text-3xl tracking-wide mb-2">SIX DEGREES</h1>
-                        <p className="text-sm text-muted-foreground">
+                        <h1 className="font-mono text-3xl tracking-wide mb-2">SIX DEGREES</h1>
+                        <p className="text-sm font-mono text-muted-foreground">
                             Connect the actors through their movies
                         </p>
+
+                        {/* Timer */}
+                        {!isComplete && (
+                            <div className="mt-4 flex justify-center">
+                                <GameTimer difficulty="hard" onTimeUp={handleTimeUp} isPaused={isComplete} />
+                            </div>
+                        )}
                     </div>
 
                     {/* Challenge */}
-                    <div className="bg-card border border-border rounded-lg p-6 mb-6">
+                    <div className="bg-card font-mono border border-border rounded-lg p-6 mb-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
@@ -150,7 +168,7 @@ flickle.app/play/degrees`;
                     </div>
 
                     {/* Path visualization */}
-                    <div className="bg-card border border-border rounded-lg p-4 mb-6">
+                    <div className="bg-card font-mono border border-border rounded-lg p-4 mb-6">
                         <div className="flex flex-wrap items-center gap-2">
                             {path.map((step, index) => (
                                 <div key={index} className="flex items-center gap-2">
@@ -182,8 +200,8 @@ flickle.app/play/degrees`;
 
                             {!isComplete && path[path.length - 1].valid !== false && (
                                 <>
-                                    <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                                    <div className="px-3 py-1.5 rounded-md text-sm bg-muted/50 border border-dashed border-border text-muted-foreground">
+                                    <ArrowRight className="w-4 h-4  text-muted-foreground" />
+                                    <div className="px-3 font-mono py-1.5 rounded-md text-sm bg-muted/50 border border-dashed border-border text-muted-foreground">
                                         {expectedType === "movie" ? "Enter a movie..." : "Enter an actor..."}
                                     </div>
                                 </>
@@ -199,7 +217,7 @@ flickle.app/play/degrees`;
                                 placeholder={`Enter a ${expectedType} name...`}
                                 value={currentInput}
                                 onChange={(e) => setCurrentInput(e.target.value)}
-                                className="flex-1 h-10 bg-card border-border"
+                                className="flex-1 font-mono h-10 bg-card border-border"
                             />
                             <Button type="submit" className="h-10 px-6">
                                 Add
@@ -208,7 +226,7 @@ flickle.app/play/degrees`;
                     )}
 
                     {/* Status */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex font-mono items-center justify-between mb-6">
                         <span className="text-sm text-muted-foreground">
                             Moves: {attempts}/{maxAttempts}
                         </span>
@@ -219,7 +237,7 @@ flickle.app/play/degrees`;
 
                     {/* Result */}
                     {isComplete && (
-                        <div className={`bg-card border rounded-lg p-6 text-center mb-6 ${hasWon ? "border-green-500/50" : "border-destructive/50"}`}>
+                        <div className={`bg-card border font-mono rounded-lg p-6 text-center mb-6 ${hasWon ? "border-green-500/50" : "border-destructive/50"}`}>
                             {hasWon ? (
                                 <>
                                     <CheckCircle2 className="w-12 h-12 text-green-400 mx-auto mb-3" />
@@ -252,7 +270,7 @@ flickle.app/play/degrees`;
                     )}
 
                     {/* Hint */}
-                    <div className="bg-card border border-border rounded-lg p-4">
+                    <div className="bg-card font-mono border border-border rounded-lg p-4">
                         <h3 className="font-medium text-sm mb-2">How to play</h3>
                         <ul className="text-xs text-muted-foreground space-y-1">
                             <li>• Connect {CHALLENGE.startActor} to {CHALLENGE.endActor} through their movies</li>
@@ -263,6 +281,23 @@ flickle.app/play/degrees`;
                     </div>
                 </div>
             </main>
+
+            <GameResultModal
+                isOpen={showResults}
+                onClose={() => setShowResults(false)}
+                won={hasWon}
+                answer={`${CHALLENGE.startActor} → ${CHALLENGE.endActor}`}
+                attempts={Math.floor(path.length / 2)}
+                maxAttempts={maxAttempts}
+                gameMode="Six Degrees"
+                flickleNumber={142}
+                emoji="🔗"
+                customShareText={`🔗 Six Degrees #142
+${CHALLENGE.startActor} → ${CHALLENGE.endActor}
+${hasWon ? "✅" : "❌"} ${Math.floor(path.length / 2)} connection${Math.floor(path.length / 2) !== 1 ? 's' : ''}
+
+flickle.app/play/degrees`}
+            />
         </div>
     );
 };

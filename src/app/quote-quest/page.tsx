@@ -1,4 +1,4 @@
-import QuoteQuest from "@/src/modules/games/quote-quest/quote-quest"
+import QuoteQuest from "@/src/modules/games/quote-quest/components/quote-quest"
 
 
 

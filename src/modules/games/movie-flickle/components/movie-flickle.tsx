@@ -9,6 +9,7 @@ import GameBoard from "@/src/primitives/game-board";
 import HintCard from "@/src/primitives/hint-card";
 import Keyboard from "@/src/modules/layout/components/keyboard";
 import ResultsModal from "@/src/primitives/results-modal";
+import GameTimer from "@/src/primitives/game-timer";
 
 type TileStatus = "empty" | "correct" | "partial" | "wrong" | "active";
 type KeyStatus = "unused" | "correct" | "partial" | "wrong";
@@ -35,6 +36,18 @@ const MovieFlickle = () => {
     const [revealingRow, setRevealingRow] = useState(-1);
     const [showResults, setShowResults] = useState(false);
     const [shake, setShake] = useState(false);
+
+    const handleTimeUp = useCallback(() => {
+        if (!gameOver) {
+            setGameOver(true);
+            setTimeout(() => setShowResults(true), 1500);
+            toast({
+                title: "Time's up!",
+                description: `The answer was ${MOVIE_TITLE}`,
+                variant: "destructive",
+            });
+        }
+    }, [gameOver]);
 
     const hints = [
         { type: "year" as const, value: "1970s", revealed: false },
@@ -198,12 +211,17 @@ const MovieFlickle = () => {
                 <div className="container mx-auto max-w-lg">
                     {/* Title */}
                     <div className="text-center mb-6">
-                        <h1 className="font-display text-2xl tracking-wide text-foreground mb-1">
+                        <h1 className="text-2xl tracking-wide font-mono text-foreground mb-1">
                             MOVIE FLICKLE
                         </h1>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm font-mono text-muted-foreground">
                             Flickle #{FLICKLE_NUMBER} • Guess the {MOVIE_TITLE.length}-letter movie
                         </p>
+
+                        {/* Timer */}
+                        {!gameOver && (
+                            <GameTimer difficulty="medium" onTimeUp={handleTimeUp} isPaused={gameOver} className="justify-center" />
+                        )}
                     </div>
 
                     {/* Hints */}

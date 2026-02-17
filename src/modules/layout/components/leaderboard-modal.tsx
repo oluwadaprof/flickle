@@ -63,7 +63,7 @@ const LeaderboardModal = ({ open, onOpenChange }: LeaderboardModalProps) => {
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-lg bg-card border-border max-h-[80vh] overflow-hidden flex flex-col">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl text-center">
+                    <DialogTitle className="font-mono text-2xl text-center">
                         Leaderboard
                     </DialogTitle>
                 </DialogHeader>
@@ -73,7 +73,7 @@ const LeaderboardModal = ({ open, onOpenChange }: LeaderboardModalProps) => {
                     <button
                         onClick={() => setActiveTab("wins")}
                         className={cn(
-                            "flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition-colors",
+                            "flex-1 flex items-center justify-center font-mono gap-2 py-2 px-4 rounded-lg text-sm font-medium transition-colors",
                             activeTab === "wins"
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-background text-muted-foreground hover:text-foreground"
@@ -85,7 +85,7 @@ const LeaderboardModal = ({ open, onOpenChange }: LeaderboardModalProps) => {
                     <button
                         onClick={() => setActiveTab("streak")}
                         className={cn(
-                            "flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition-colors",
+                            "flex-1 flex items-center justify-center font-mono gap-2 py-2 px-4 rounded-lg text-sm font-medium transition-colors",
                             activeTab === "streak"
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-background text-muted-foreground hover:text-foreground"
@@ -124,7 +124,7 @@ const LeaderboardModal = ({ open, onOpenChange }: LeaderboardModalProps) => {
 
                                 <div className="flex-1 min-w-0">
                                     <p className={cn(
-                                        "font-medium truncate",
+                                        "font-medium font-mono truncate",
                                         entry.user_id === user?.id && "text-primary"
                                     )}>
                                         {entry.display_name}

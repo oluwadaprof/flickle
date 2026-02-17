@@ -23,7 +23,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 const GameModeStats = ({ modeStats }: GameModeStatsProps) => {
     return (
-        <div className="space-y-3">
+        <div className="space-y-3 ">
             {modeStats.map((stat) => {
                 const Icon = iconMap[stat.icon] || Film;
                 const winRate = stat.played > 0 ? Math.round((stat.won / stat.played) * 100) : 0;
@@ -46,7 +46,7 @@ const GameModeStats = ({ modeStats }: GameModeStatsProps) => {
                             <Progress value={winRate} className="h-1.5" />
                         </div>
                         <div className="text-right">
-                            <span className="text-sm font-medium text-primary">{winRate}%</span>
+                            <span className="text-sm font-medium text-primary font-mono">{winRate}%</span>
                             <p className="text-[10px] text-muted-foreground">
                                 ~{stat.avgGuesses.toFixed(1)} avg
                             </p>

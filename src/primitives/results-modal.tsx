@@ -58,13 +58,13 @@ const ResultsModal = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-md bg-card border-border">
+            <DialogContent className="sm:max-w-md bg-card font-mono border-border">
                 <DialogHeader>
                     <DialogTitle className="flex items-center justify-center gap-3 font-display text-2xl tracking-wide">
                         {won ? (
                             <>
                                 <Trophy className="w-8 h-8 text-primary" />
-                                <span className="text-gradient">You Got It!</span>
+                                <span className="text-gradient font-mono">You Got It!</span>
                             </>
                         ) : (
                             <>

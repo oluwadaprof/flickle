@@ -1,4 +1,4 @@
-import SoundtrackSleuth from "@/src/modules/games/soundtrack-sleuth/soundtrack-sleuth"
+import SoundtrackSleuth from "@/src/modules/games/soundtrack-sleuth/components/soundtrack-sleuth"
 
 
 const SoundtrackSleuthPage = () => {

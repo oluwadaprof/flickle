@@ -1,4 +1,4 @@
-import SceneGuesser from "@/src/modules/games/scene-guesser/scene-guesser"
+import SceneGuesser from "@/src/modules/games/scene-guesser/components/scene-guesser"
 
 
 const SceneGuesserPage = () => {
