@@ -1,11 +1,10 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, Music, RefreshCw, Volume2, HelpCircle, VolumeX, Pause, Play } from "lucide-react";
+import { Music, RefreshCw, Volume2, HelpCircle, VolumeX, Pause, Play } from "lucide-react";
 
 import { toast } from "sonner";
 import Header from "../../../layout/components/header";
-import Link from "next/link";
 import { Input } from "@/src/primitives/ui/input";
 import { Button } from "@/src/primitives/ui/button";
 import GameResultModal from "@/src/primitives/game-result-modal";
@@ -93,18 +92,15 @@ const SoundtrackSleuth = () => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const maxAttempts = 4;
 
-    // Initialize and auto-play audio on mount
     useEffect(() => {
         const audio = new Audio(currentTrack.audioUrl);
         audio.volume = volume;
         audio.loop = true;
         audioRef.current = audio;
 
-        // Attempt autoplay - browsers may block it, so we handle gracefully
         audio.play()
             .then(() => setIsPlaying(true))
             .catch(() => {
-                // Autoplay blocked by browser, user must click play
                 setIsPlaying(false);
             });
 
@@ -131,15 +127,6 @@ const SoundtrackSleuth = () => {
         if (audioRef.current) audioRef.current.volume = val;
     }, []);
 
-    const stopAudio = useCallback(() => {
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.currentTime = 0;
-            setIsPlaying(false);
-        }
-    }, []);
-
-
     const handleTimeUp = useCallback(() => {
         if (!gameWon && !gameOver) {
             setGameOver(true);
@@ -154,7 +141,6 @@ const SoundtrackSleuth = () => {
         const normalizedGuess = guess.toLowerCase().trim();
         const normalizedAnswer = currentTrack.movie.toLowerCase();
 
-        // Check for partial matches (e.g., "lord of the rings" should match)
         const isCorrect = normalizedAnswer.includes(normalizedGuess) ||
             normalizedGuess.includes(normalizedAnswer.split(":")[0].toLowerCase().trim());
 
@@ -172,7 +158,6 @@ const SoundtrackSleuth = () => {
                 toast.error(`Game over! It was "${currentTrack.movie}"`);
             } else {
                 toast.error(`Not quite! ${maxAttempts - newAttempts} attempts left`);
-                // Reveal next clue on wrong guess
                 if (cluesRevealed < currentTrack.clues.length) {
                     setCluesRevealed(cluesRevealed + 1);
                 }
@@ -198,11 +183,12 @@ const SoundtrackSleuth = () => {
             <main className="pt-20 pb-12 px-4">
                 <div className="container mx-auto max-w-2xl">
 
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-display tracking-tight mb-2">
+                    {/* Title */}
+                    <div className="text-center mb-6 sm:mb-8">
+                        <h1 className="text-2xl sm:text-3xl font-display tracking-tight mb-2">
                             <span className="font-mono">Soundtrack Sleuth</span>
                         </h1>
-                        <p className="text-muted-foreground font-mono">
+                        <p className="text-sm text-muted-foreground font-mono">
                             Identify the movie from its iconic soundtrack
                         </p>
 
@@ -215,10 +201,12 @@ const SoundtrackSleuth = () => {
                     </div>
 
                     {/* Soundtrack Card */}
-                    <div className="bg-card/80 font-mono backdrop-blur-sm border border-border rounded-xl p-6 mb-6">
+                    <div className="bg-card/80 font-mono backdrop-blur-sm border border-border rounded-xl p-4 sm:p-6 mb-6">
+
+                        {/* Card Header */}
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2">
-                                <Music className="w-5 h-5 text-primary" />
+                                <Music className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                 <span className="text-sm font-medium text-primary">Soundtrack Clues</span>
                             </div>
                             <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-1 rounded">
@@ -227,25 +215,40 @@ const SoundtrackSleuth = () => {
                         </div>
 
                         {/* Audio Player */}
-                        <div className="flex items-center font-mono gap-3 mb-4 p-3 bg-primary/5 border border-primary/20 rounded-lg">
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={togglePlay}
-                                className="shrink-0 h-10 w-10 rounded-full border-primary/30 hover:bg-primary/10"
-                            >
-                                {isPlaying ? <Pause className="w-4 h-4 text-primary" /> : <Play className="w-4 h-4 text-primary" />}
-                            </Button>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs font-mono uppercase tracking-wider text-primary">
-                                    {isPlaying ? "Now Playing" : "Play Soundtrack"}
-                                </p>
-                                <p className="text-xs text-muted-foreground truncate">
-                                    Composed by: <span className="text-foreground font-medium">{currentTrack.composer}</span>
-                                </p>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 p-3 bg-primary/5 border border-primary/20 rounded-lg">
+
+                            {/* Top row on mobile: play button + track info */}
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={togglePlay}
+                                    className="shrink-0 h-10 w-10 rounded-full border-primary/30 hover:bg-primary/10"
+                                >
+                                    {isPlaying
+                                        ? <Pause className="w-4 h-4 text-primary" />
+                                        : <Play className="w-4 h-4 text-primary" />
+                                    }
+                                </Button>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-mono uppercase tracking-wider text-primary">
+                                        {isPlaying ? "Now Playing" : "Play Soundtrack"}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground truncate">
+                                        Composed by:{" "}
+                                        <span className="text-foreground font-medium">
+                                            {currentTrack.composer}
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                                {volume === 0 ? <VolumeX className="w-4 h-4 text-muted-foreground" /> : <Volume2 className="w-4 h-4 text-muted-foreground" />}
+
+                            {/* Volume row — full width on mobile, inline on sm+ */}
+                            <div className="flex items-center gap-2 w-full sm:w-auto sm:shrink-0">
+                                {volume === 0
+                                    ? <VolumeX className="w-4 h-4 text-muted-foreground shrink-0" />
+                                    : <Volume2 className="w-4 h-4 text-muted-foreground shrink-0" />
+                                }
                                 <input
                                     type="range"
                                     min="0"
@@ -253,7 +256,7 @@ const SoundtrackSleuth = () => {
                                     step="0.05"
                                     value={volume}
                                     onChange={handleVolumeChange}
-                                    className="w-20 h-1 accent-primary cursor-pointer"
+                                    className="flex-1 sm:w-20 h-1 accent-primary cursor-pointer"
                                 />
                             </div>
                         </div>
@@ -265,7 +268,7 @@ const SoundtrackSleuth = () => {
                                     key={i}
                                     className="flex items-start gap-3 p-3 bg-secondary/30 rounded-lg"
                                 >
-                                    <span className="text-xs font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+                                    <span className="text-xs font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded shrink-0">
                                         {i + 1}
                                     </span>
                                     <p className="text-sm text-foreground">{clue}</p>
@@ -273,6 +276,7 @@ const SoundtrackSleuth = () => {
                             ))}
                         </div>
 
+                        {/* Clues / Attempts footer */}
                         <div className="flex items-center justify-between text-sm text-muted-foreground">
                             <span>Clues: {cluesRevealed}/{currentTrack.clues.length}</span>
                             <span>Attempts: {attempts}/{maxAttempts}</span>
@@ -281,25 +285,29 @@ const SoundtrackSleuth = () => {
 
                     {/* Controls */}
                     {!gameWon && !gameOver && (
-                        <div className="space-y-4">
-                            <div className="flex gap-2">
+                        <div className="space-y-3 sm:space-y-4">
+                            {/* Input + Guess button */}
+                            <div className="flex flex-col sm:flex-row gap-2">
                                 <Input
                                     value={guess}
                                     onChange={(e) => setGuess(e.target.value)}
                                     placeholder="Enter movie name..."
-                                    className="bg-card/50 border-border font-mono"
+                                    className="bg-card/50 border-border font-mono flex-1"
                                     onKeyDown={(e) => e.key === "Enter" && handleGuess()}
                                 />
-                                <Button onClick={handleGuess}>Guess</Button>
+                                <Button onClick={handleGuess} className="w-full sm:w-auto">
+                                    Guess
+                                </Button>
                             </div>
 
+                            {/* Reveal clue button */}
                             <div className="flex justify-center">
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={revealClue}
                                     disabled={cluesRevealed >= currentTrack.clues.length}
-                                    className="gap-2"
+                                    className="gap-2 w-full sm:w-auto"
                                 >
                                     <HelpCircle className="w-4 h-4" />
                                     Reveal Clue ({currentTrack.clues.length - cluesRevealed} left)
@@ -308,9 +316,10 @@ const SoundtrackSleuth = () => {
                         </div>
                     )}
 
+                    {/* Play Again */}
                     {(gameWon || gameOver) && (
                         <div className="flex justify-center">
-                            <Button onClick={resetGame} className="gap-2">
+                            <Button onClick={resetGame} className="gap-2 w-full sm:w-auto">
                                 <RefreshCw className="w-4 h-4" />
                                 Play Again
                             </Button>

@@ -65,7 +65,7 @@ const Index = () => {
             The daily movie guessing game for cinema lovers. Multiple trivia modes, one daily challenge.
           </p>
 
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
             <Button className="gap-2 h-10 px-6" onClick={() => router.push('/movie-flickle')}>
               Play Today's Flickle
               <ArrowRight className="w-4 h-4" />

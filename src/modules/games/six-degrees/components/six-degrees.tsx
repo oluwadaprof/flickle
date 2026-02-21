@@ -142,21 +142,21 @@ flickle.app/play/degrees`;
 
                     {/* Challenge */}
                     <div className="bg-card font-mono border border-border rounded-lg p-6 mb-6">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
                                     <User className="w-6 h-6 text-primary" />
                                 </div>
-                                <div>
+                                <div className="text-center sm:text-left">
                                     <span className="text-xs text-muted-foreground">Start</span>
                                     <p className="font-medium">{CHALLENGE.startActor}</p>
                                 </div>
                             </div>
 
-                            <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                            <ArrowRight className="w-5 h-5 text-muted-foreground rotate-90 sm:rotate-0" />
 
                             <div className="flex items-center gap-3">
-                                <div>
+                                <div className="text-center sm:text-right">
                                     <span className="text-xs text-muted-foreground">End</span>
                                     <p className="font-medium">{CHALLENGE.endActor}</p>
                                 </div>

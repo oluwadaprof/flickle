@@ -79,8 +79,8 @@ const BlurredFrame = () => {
                 <div className="container mx-auto max-w-lg">
                     {/* Title */}
                     <div className="text-center mb-8">
-                        <div className="inline-flex items-center gap-2 mb-3">
-                            <span className="text-4xl">🖼️</span>
+                        <div className="inline-flex items-center gap-2 mb-3 flex-wrap justify-center">
+
                             <h1 className="font-mono text-3xl tracking-wide text-foreground">
                                 THE BLURRED FRAME
                             </h1>

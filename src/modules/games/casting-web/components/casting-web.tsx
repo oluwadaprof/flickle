@@ -79,8 +79,8 @@ const CastingWeb = () => {
                 <div className="container mx-auto max-w-lg">
                     {/* Title */}
                     <div className="text-center font-mono mb-8">
-                        <div className="inline-flex items-center gap-2 mb-3">
-                            <span className="text-4xl">🕸️</span>
+                        <div className="inline-flex items-center gap-2 mb-3 flex-wrap justify-center">
+
                             <h1 className="font-mono text-3xl tracking-wide text-foreground">
                                 THE CASTING WEB
                             </h1>
@@ -98,22 +98,22 @@ const CastingWeb = () => {
                                 <div
                                     key={actor.name}
                                     className={`
-                    p-4 rounded-xl border transition-all duration-300 font-mono
+                   px-3 py-4 sm:p-4 rounded-xl border transition-all duration-300 font-mono
                     ${isRevealed
                                             ? "bg-card border-border"
                                             : "bg-muted/30 border-dashed border-muted-foreground/30"
                                         }
                   `}
                                 >
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-3 flex-wrap justify-center">
                                         <div
                                             className={`
-                        w-12 h-12 rounded-full flex items-center justify-center
-                        ${isRevealed ? "bg-secondary" : "bg-muted"}
-                      `}
+                                                w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center
+                                                ${isRevealed ? "bg-secondary" : "bg-muted"}
+                                              `}
                                         >
                                             {isRevealed ? (
-                                                <Users className="w-6 h-6 text-primary" />
+                                                <Users className="w-4 h-4 sm:w-6 sm:h-6  text-primary" />
                                             ) : (
                                                 <HelpCircle className="w-6 h-6 text-muted-foreground" />
                                             )}

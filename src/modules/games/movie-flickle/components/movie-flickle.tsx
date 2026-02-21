@@ -212,8 +212,7 @@ const MovieFlickle = () => {
                     {/* Title */}
                     <div className="text-center mb-6">
                         <h1 className="text-2xl tracking-wide font-mono text-foreground mb-1">
-                            MOVIE FLICKLE
-                        </h1>
+                            Movie Flickle                       </h1>
                         <p className="text-sm font-mono text-muted-foreground">
                             Flickle #{FLICKLE_NUMBER} • Guess the {MOVIE_TITLE.length}-letter movie
                         </p>

@@ -36,7 +36,7 @@ const CountdownTimer = () => {
     const formatNumber = (num: number) => String(num).padStart(2, "0");
 
     return (
-        <div className="flex items-center justify-center gap-3 text-muted-foreground">
+        <div className="flex items-center justify-center gap-3 text-muted-foreground flex-wrap">
             <Clock className="w-4 h-4" />
             <span className="text-xs font-mono uppercase tracking-wider">NEXT FLICKLE IN</span>
             <div className="flex items-center gap-1 font-mono text-foreground">
